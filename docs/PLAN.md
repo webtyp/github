@@ -185,3 +185,6 @@ machine (`gh` logged in), and that secret values only travel on stdin.
 - `grep -rn "exec.Command" --include=*.go . | grep -v "github.go"` → empty (only `ExecRunner` runs commands).
 - `go list -deps . | grep -c "webtyp.com/goflare"` → `0`.
 - `git diff --stat main` lists every file of the stages table.
+
+## Executor notes
+- Added int64 type for DatabaseID since github IDs could overflow int32.

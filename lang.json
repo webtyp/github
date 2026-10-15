@@ -1,0 +1,19 @@
+{
+  "languages": ["es", "zh", "hi", "ar", "pt", "fr", "de", "ru"],
+  "keys": {
+    "Commit and push .github/workflows/deploy.yml to main": ["", "", "", "", "", "", "", ""],
+    "Deploy workflow": ["", "", "", "", "", "", "", ""],
+    "Deploy workflow outdated": ["", "", "", "", "", "", "", ""],
+    "GitHub CLI": ["", "", "", "", "", "", "", ""],
+    "GitHub CLI auth": ["", "", "", "", "", "", "", ""],
+    "GitHub repository": ["", "", "", "", "", "", "", ""],
+    "Install it from https://cli.github.com and open the project again": ["", "", "", "", "", "", "", ""],
+    "Run 'gh auth login' in a terminal, follow the device code, and open the project again": ["", "", "", "", "", "", "", ""],
+    "Run 'gh repo create' in a terminal and open the project again": ["", "", "", "", "", "", "", ""],
+    "The deploy config changed, but the workflow file on GitHub is old": ["", "", "", "", "", "", "", ""],
+    "The deploy runs on GitHub, but this folder has no remote": ["", "", "", "", "", "", "", ""],
+    "webtyp needs your GitHub session to configure the deployment": ["", "", "", "", "", "", "", ""],
+    "webtyp uses it to reach GitHub with your own session": ["", "", "", "", "", "", "", ""],
+    "webtyp will write .github/workflows/deploy.yml": ["", "", "", "", "", "", "", ""]
+  }
+}

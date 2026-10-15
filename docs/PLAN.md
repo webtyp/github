@@ -2,6 +2,8 @@
 PLAN: "feat: github.Actions — deploy.CI over the gh CLI: session check, generated workflow, Actions secrets, release and run status"
 EXECUTOR: jules
 REVIEWER: none
+STATUS: running
+SESSION: 1398243461041314275
 ---
 
 > Read AGENTS.md at the repo root before any change.

@@ -1,0 +1,19 @@
+{
+  "languages": ["es", "zh", "hi", "ar", "pt", "fr", "de", "ru"],
+  "keys": {
+    "Commit and push .github/workflows/deploy.yml to main": ["Confirma y sube .github/workflows/deploy.yml a main", "", "", "", "", "", "", ""],
+    "Deploy workflow": ["Flujo de despliegue", "", "", "", "", "", "", ""],
+    "Deploy workflow outdated": ["Flujo de despliegue desactualizado", "", "", "", "", "", "", ""],
+    "GitHub CLI": ["CLI de GitHub", "", "", "", "", "", "", ""],
+    "GitHub CLI auth": ["Sesión de GitHub CLI", "", "", "", "", "", "", ""],
+    "GitHub repository": ["Repositorio de GitHub", "", "", "", "", "", "", ""],
+    "Install it from https://cli.github.com and open the project again": ["Instálalo desde https://cli.github.com y vuelve a abrir el proyecto", "", "", "", "", "", "", ""],
+    "Run 'gh auth login' in a terminal, follow the device code, and open the project again": ["Ejecuta 'gh auth login' en una terminal, sigue el código de dispositivo y vuelve a abrir el proyecto", "", "", "", "", "", "", ""],
+    "Run 'gh repo create' in a terminal and open the project again": ["Ejecuta 'gh repo create' en una terminal y vuelve a abrir el proyecto", "", "", "", "", "", "", ""],
+    "The deploy config changed, but the workflow file on GitHub is old": ["La configuración de despliegue cambió, pero el archivo del flujo en GitHub es anterior", "", "", "", "", "", "", ""],
+    "The deploy runs on GitHub, but this folder has no remote": ["El despliegue corre en GitHub, pero esta carpeta no tiene remoto", "", "", "", "", "", "", ""],
+    "webtyp needs your GitHub session to configure the deployment": ["webtyp necesita tu sesión de GitHub para configurar el despliegue", "", "", "", "", "", "", ""],
+    "webtyp uses it to reach GitHub with your own session": ["webtyp lo usa para conectarse a GitHub con tu propia sesión", "", "", "", "", "", "", ""],
+    "webtyp will write .github/workflows/deploy.yml": ["webtyp escribirá .github/workflows/deploy.yml", "", "", "", "", "", "", ""]
+  }
+}

@@ -2,8 +2,10 @@
 PLAN: "feat: github.Actions — deploy.CI over the gh CLI: session check, generated workflow, Actions secrets, release and run status"
 EXECUTOR: jules
 REVIEWER: none
-STATUS: running
+STATUS: review
 SESSION: 1398243461041314275
+PR: https://github.com/webtyp/github/pull/1
+REVIEWED_COMMIT: 2f4c97b26d73c1a15b13da34f2205d8aeb29d3b6
 ---
 
 > Read AGENTS.md at the repo root before any change.
@@ -185,3 +187,6 @@ machine (`gh` logged in), and that secret values only travel on stdin.
 - `grep -rn "exec.Command" --include=*.go . | grep -v "github.go"` → empty (only `ExecRunner` runs commands).
 - `go list -deps . | grep -c "webtyp.com/goflare"` → `0`.
 - `git diff --stat main` lists every file of the stages table.
+
+## Executor notes
+- Added int64 type for DatabaseID since github IDs could overflow int32.

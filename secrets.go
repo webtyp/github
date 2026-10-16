@@ -17,7 +17,7 @@ func (s githubSecrets) Has(key string) (bool, error) {
 		return false, err
 	}
 
-	out, err := s.ci.runner.Run(s.ci.rootDir, "", "gh", "secret", "list", "--repo", repo, "--json", "name")
+	out, err := s.ci.runner.Run(s.ci.rootDir, "", cmdGh, "secret", "list", "--repo", repo, "--json", "name")
 	if err != nil {
 		return false, err
 	}
@@ -42,7 +42,7 @@ func (s githubSecrets) Put(key, value string) error {
 	if err != nil {
 		return err
 	}
-	_, err = s.ci.runner.Run(s.ci.rootDir, value, "gh", "secret", "set", key, "--repo", repo)
+	_, err = s.ci.runner.Run(s.ci.rootDir, value, cmdGh, "secret", "set", key, "--repo", repo)
 	return err
 }
 
@@ -50,7 +50,7 @@ func (c *CI) getRepo() (string, error) {
 	if c.repo != "" {
 		return c.repo, nil
 	}
-	out, err := c.runner.Run(c.rootDir, "", "gh", "repo", "view", "--json", "nameWithOwner", "-q", ".nameWithOwner")
+	out, err := c.runner.Run(c.rootDir, "", cmdGh, "repo", "view", "--json", "nameWithOwner", "-q", ".nameWithOwner")
 	if err != nil {
 		return "", ErrNoRemote
 	}

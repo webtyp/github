@@ -2,10 +2,20 @@ package github
 
 import (
 	"encoding/json"
-	"fmt"
+	"strconv"
 	"time"
 
 	"webtyp.com/deploy"
+)
+
+const (
+	statusQueued      = "queued"
+	statusWaiting     = "waiting"
+	statusPending     = "pending"
+	statusInProgress  = "in_progress"
+	statusCompleted   = "completed"
+	conclusionSuccess = "success"
+	eventDispatch     = "workflow_dispatch"
 )
 
 var (
@@ -23,7 +33,7 @@ func (c *CI) Release(p deploy.Plan) (deploy.Run, error) {
 
 	dispatchTime := timeNow()
 
-	_, err = c.runner.Run(c.rootDir, "", "gh", "workflow", "run", "deploy.yml", "--repo", repo, "--ref", "main")
+	_, err = c.runner.Run(c.rootDir, "", cmdGh, "workflow", "run", workflowFileName, "--repo", repo, "--ref", defaultBranch)
 	if err != nil {
 		return deploy.Run{}, err
 	}
@@ -31,10 +41,10 @@ func (c *CI) Release(p deploy.Plan) (deploy.Run, error) {
 	deadline := dispatchTime.Add(pollTimeout)
 
 	for timeNow().Before(deadline) {
-		out, err := c.runner.Run(c.rootDir, "", "gh", "run", "list", "--workflow", "deploy.yml", "--repo", repo, "--event", "workflow_dispatch", "--limit", "1", "--json", "databaseId,url,createdAt")
+		out, err := c.runner.Run(c.rootDir, "", cmdGh, "run", "list", "--workflow", workflowFileName, "--repo", repo, "--event", eventDispatch, "--limit", "1", "--json", "databaseId,url,createdAt")
 		if err == nil {
 			var runs []struct {
-				DatabaseID int64    `json:"databaseId"`
+				DatabaseID int64  `json:"databaseId"`
 				URL        string `json:"url"`
 				CreatedAt  string `json:"createdAt"`
 			}
@@ -42,7 +52,7 @@ func (c *CI) Release(p deploy.Plan) (deploy.Run, error) {
 				createdAt, err := time.Parse(time.RFC3339, runs[0].CreatedAt)
 				if err == nil && createdAt.After(dispatchTime) {
 					return deploy.Run{
-						ID:  fmt.Sprintf("%d", runs[0].DatabaseID),
+						ID:  strconv.FormatInt(runs[0].DatabaseID, 10),
 						URL: runs[0].URL,
 					}, nil
 				}
@@ -60,7 +70,7 @@ func (c *CI) Status(r deploy.Run) (deploy.RunState, error) {
 		return 0, err
 	}
 
-	out, err := c.runner.Run(c.rootDir, "", "gh", "run", "view", r.ID, "--repo", repo, "--json", "status,conclusion")
+	out, err := c.runner.Run(c.rootDir, "", cmdGh, "run", "view", r.ID, "--repo", repo, "--json", "status,conclusion")
 	if err != nil {
 		return 0, err
 	}
@@ -74,12 +84,12 @@ func (c *CI) Status(r deploy.Run) (deploy.RunState, error) {
 	}
 
 	switch data.Status {
-	case "queued", "waiting", "pending":
+	case statusQueued, statusWaiting, statusPending:
 		return deploy.RunQueued, nil
-	case "in_progress":
+	case statusInProgress:
 		return deploy.RunInProgress, nil
-	case "completed":
-		if data.Conclusion == "success" {
+	case statusCompleted:
+		if data.Conclusion == conclusionSuccess {
 			return deploy.RunSucceeded, nil
 		}
 		return deploy.RunFailed, nil
@@ -87,3 +97,4 @@ func (c *CI) Status(r deploy.Run) (deploy.RunState, error) {
 
 	return 0, ErrUnknownRunStatus
 }
+

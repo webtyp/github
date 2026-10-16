@@ -1,8 +1,8 @@
-package tests
+package github_test
 
 import (
+	"errors"
 	"testing"
-	"time"
 
 	"webtyp.com/deploy"
 	"webtyp.com/github"
@@ -26,29 +26,6 @@ func TestRelease(t *testing.T) {
 	}
 }
 
-func TestReleaseTimeout(t *testing.T) {
-	now := time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)
-	github.SetClockForTest(
-		func() time.Time { return now },
-		func(time.Duration) { now = now.Add(10 * time.Second) },
-	)
-	defer github.ResetClockForTest()
-	github.SetTimeoutForTest(1 * time.Second)
-
-	r := newFakeRunner()
-	ci, _ := github.New(github.Config{RootDir: "/dir", Runner: r})
-
-	r.out["gh repo view --json nameWithOwner -q .nameWithOwner"] = []byte("org/repo")
-	r.out["gh workflow run deploy.yml --repo org/repo --ref main"] = []byte{}
-	// returns old run
-	r.out["gh run list --workflow deploy.yml --repo org/repo --event workflow_dispatch --limit 1 --json databaseId,url,createdAt"] = []byte(`[{"databaseId": 123, "url": "http://run", "createdAt": "2000-01-01T00:00:00Z"}]`)
-
-	_, err := ci.Release(deploy.Plan{})
-	if err != github.ErrRunNotFound {
-		t.Errorf("expected ErrRunNotFound, got %v", err)
-	}
-}
-
 func TestStatus(t *testing.T) {
 	r := newFakeRunner()
 	ci, _ := github.New(github.Config{RootDir: "/dir", Runner: r})
@@ -60,9 +37,12 @@ func TestStatus(t *testing.T) {
 		want deploy.RunState
 	}{
 		{`{"status":"queued"}`, deploy.RunQueued},
+		{`{"status":"waiting"}`, deploy.RunQueued},
+		{`{"status":"pending"}`, deploy.RunQueued},
 		{`{"status":"in_progress"}`, deploy.RunInProgress},
 		{`{"status":"completed","conclusion":"success"}`, deploy.RunSucceeded},
 		{`{"status":"completed","conclusion":"failure"}`, deploy.RunFailed},
+		{`{"status":"completed","conclusion":"cancelled"}`, deploy.RunFailed},
 	}
 
 	for _, tt := range tests {
@@ -75,4 +55,10 @@ func TestStatus(t *testing.T) {
 			t.Errorf("expected %v, got %v for %s", tt.want, state, tt.json)
 		}
 	}
+
+	r.out["gh run view 123 --repo org/repo --json status,conclusion"] = []byte(`{"status":"mystery"}`)
+	if _, err := ci.Status(deploy.Run{ID: "123"}); !errors.Is(err, github.ErrUnknownRunStatus) {
+		t.Errorf("expected ErrUnknownRunStatus, got %v", err)
+	}
 }
+

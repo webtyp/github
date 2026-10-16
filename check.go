@@ -9,11 +9,16 @@ import (
 	"webtyp.com/lang"
 )
 
+const (
+	cmdGh  = "gh"
+	cmdGit = "git"
+)
+
 func (c *CI) Check(p deploy.Plan, job deploy.Job) ([]deploy.Missing, error) {
 	var missing []deploy.Missing
 
 	// G1: gh --version
-	_, err := c.runner.Run(c.rootDir, "", "gh", "--version")
+	_, err := c.runner.Run(c.rootDir, "", cmdGh, "--version")
 	if err != nil {
 		return []deploy.Missing{{
 			Item:  textGhMissing,
@@ -24,7 +29,7 @@ func (c *CI) Check(p deploy.Plan, job deploy.Job) ([]deploy.Missing, error) {
 	}
 
 	// G2: gh auth status
-	_, err = c.runner.Run(c.rootDir, "", "gh", "auth", "status")
+	_, err = c.runner.Run(c.rootDir, "", cmdGh, "auth", "status")
 	if err != nil {
 		return []deploy.Missing{{
 			Item:  textGhAuthMissing,
@@ -48,7 +53,7 @@ func (c *CI) Check(p deploy.Plan, job deploy.Job) ([]deploy.Missing, error) {
 	rendered := render(p, job)
 
 	// G4: read rootDir/.github/workflows/deploy.yml
-	path := filepath.Join(c.rootDir, ".github", "workflows", "deploy.yml")
+	path := filepath.Join(c.rootDir, workflowDir, workflowFileName)
 	content, err := os.ReadFile(path)
 	if err != nil || !bytes.Equal(content, rendered) {
 		missing = append(missing, deploy.Missing{
@@ -60,7 +65,7 @@ func (c *CI) Check(p deploy.Plan, job deploy.Job) ([]deploy.Missing, error) {
 	}
 
 	// G5: git show origin/main:.github/workflows/deploy.yml
-	gitOut, gitErr := c.runner.Run(c.rootDir, "", "git", "show", "origin/main:.github/workflows/deploy.yml")
+	gitOut, gitErr := c.runner.Run(c.rootDir, "", cmdGit, "show", workflowGitRef)
 	if gitErr != nil || !bytes.Equal(gitOut, rendered) {
 		missing = append(missing, deploy.Missing{
 			Item:  textGhWorkflowOutdated,
@@ -72,3 +77,4 @@ func (c *CI) Check(p deploy.Plan, job deploy.Job) ([]deploy.Missing, error) {
 
 	return missing, nil
 }
+

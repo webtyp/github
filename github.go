@@ -3,9 +3,7 @@ package github
 import (
 	"bytes"
 	"errors"
-	"os"
 	"os/exec"
-	"path/filepath"
 	"strings"
 
 	"webtyp.com/deploy"
@@ -72,22 +70,5 @@ func (c *CI) ID() deploy.CIID {
 	return Actions
 }
 
-
-
-
-func (c *CI) Provision(p deploy.Plan, job deploy.Job) error {
-	path := filepath.Join(c.rootDir, ".github", "workflows", "deploy.yml")
-	content := render(p, job)
-
-	existing, err := os.ReadFile(path)
-	if err == nil && bytes.Equal(existing, content) {
-		return nil
-	}
-
-	if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
-		return err
-	}
-	return os.WriteFile(path, content, 0644)
-}
-
 var _ deploy.CI = (*CI)(nil)
+

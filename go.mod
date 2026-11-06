@@ -5,7 +5,7 @@ go 1.26.8
 require (
 	webtyp.com/deploy v0.2.115
 	webtyp.com/ghaction v0.1.2
-	webtyp.com/lang v0.1.12
+	webtyp.com/lang v0.1.13
 )
 
 require webtyp.com/fmt v1.0.0 // indirect

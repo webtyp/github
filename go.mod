@@ -8,4 +8,4 @@ require (
 	webtyp.com/lang v0.1.16
 )
 
-require webtyp.com/fmt v1.0.1 // indirect
+require webtyp.com/fmt v1.0.2 // indirect

@@ -98,3 +98,4 @@ func TestReleaseTimeout(t *testing.T) {
 		t.Errorf("expected 15 polls (30s / 2s), got %d", r.listCalls)
 	}
 }
+
